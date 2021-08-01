@@ -175,6 +175,18 @@ export default {
               name: "globalVariable",
             }
           ]
+        },
+        {
+          btnName: this.$t("sidebar.user"),
+          icoName: "ios-construct",
+          children: [
+            {
+              router: "/user",
+              icoName: "ios-construct",
+              btnName:  this.$t("sidebar.user_user"),
+              name: "user",
+            }
+          ]
         }
       ];
     }

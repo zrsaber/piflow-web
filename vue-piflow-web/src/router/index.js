@@ -105,6 +105,17 @@ export default new Router({
               path: '/globalVariable',
               name: 'globalVariable',
               component: () => import('../components/pages/Admin/globalVariable')
+            },
+
+            {
+              path: '/user',
+              name: 'user',
+              component: () => import('../components/pages/User')
+            },
+            {
+              path: '/mange',
+              name: 'mange',
+              component: () => import('../components/pages/User/index')
             }
           ]
         },
@@ -112,7 +123,7 @@ export default new Router({
           path: '/drawingBoard',
           name: 'drawingboard',
           component: () => import('../components/pages/DrawingBoard')
-        }
+        },
       ]
     },
 

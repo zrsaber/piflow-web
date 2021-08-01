@@ -43,7 +43,7 @@
   </div>
 </template>
 <script>
-import { log } from 'util';
+
 export default {
   data() {
     return {
@@ -178,16 +178,16 @@ export default {
         },
         {
           btnName: this.$t("sidebar.user"),
-          icoName: "ios-construct",
+          icoName: "ios-people",
           children: [
             {
               router: "/user",
-              icoName: "ios-construct",
-              btnName:  this.$t("sidebar.user_user"),
+              icoName: "ios-paper",
+              btnName:  this.$t("sidebar.user"),
               name: "user",
             }
           ]
-        }
+        },
       ];
     }
   },

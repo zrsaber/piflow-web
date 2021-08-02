@@ -115,9 +115,9 @@ export default {
             name:"",
             userName:"",
             ipAddress:"",
-            //操作记录需要再次进行添加，需要认真考虑
-            //设置最后更新时间
-            lastUpdateDttm:""
+            //操作记录需要在修改页进行显示，但是要设置成不可修改
+            //设置最后更新时间，在进行修改之后需要同步更新
+            crtDttm:""
             //此处是否要对状态进行初始化，等待实验
         };
     },
@@ -131,7 +131,7 @@ export default {
             }
         },
         // 此处判断最开始显示第几页并且显示多少条数据
-        param(val) {
+        param(/*val*/) {
             this.page = 1;
             this.limit = 10;
             this.getTableData();
@@ -142,8 +142,53 @@ export default {
         columns() {
             return[
                 {
-                    title:this.$t("user_colums.")
-                }
+                    //用户名
+                    title:this.$t("user_columns.name"),
+                    key:"name",
+                    sortable:true
+                },
+                //登陆账号
+                {
+                    title:this.$t("user_columns.userName"),
+                    key:"userName",
+                    sortable:true
+                },
+                //创建时间
+                {
+                    title:this.$t("user_columns.createTime"),
+                    key:"createDttm"
+                },
+                //ip地址
+                {
+                    title:this.$t("user_columns.ipAddress"),
+                    key:"ipAddress"
+                },
+                //status状态列
+                {
+                    title:this.$t("user_columns.status"),
+                    key:"status",
+                    render: (h, params) => {
+                            const row = params.row;
+                            const color = row.status === 1 ? 'primary' : row.status === 2 ? 'success' : 'error';
+                            const text = row.status === 1 ? 'Working' : row.status === 2 ? 'Freezing' : 'Closing';
+
+                            return h('Tag', {
+                                props: {
+                                    type: 'dot',
+                                    color: color
+                                }
+                            }, text);
+                        }
+                },
+
+                //action操作
+                {
+                title: this.$t("user_columns.action"),
+                slot: "action",
+                width: 200,
+                align: "center"
+        }
+
             ]
         }
     }

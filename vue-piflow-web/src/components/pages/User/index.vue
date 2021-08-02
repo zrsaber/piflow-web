@@ -115,7 +115,7 @@ export default {
             name:"",
             userName:"",
             ipAddress:"",
-            //操作记录需要再次进行添加
+            //操作记录需要再次进行添加，需要认真考虑
             //设置最后更新时间
             lastUpdateDttm:""
             //此处是否要对状态进行初始化，等待实验

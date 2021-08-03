@@ -58,34 +58,34 @@
         <!-- 点击添加按钮出现的 -->
         <Modal
             v-model="isOpen"
-            :title="id?$t('admin_columns.update_title'):$t('admin_columns.create_title')"
+            :title="id?$t('user_columns.update_title'):$t('user_columns.create_title')"
             :ok-text="$t('modal.ok_text')"
             :cancel-text="$t('modal.cancel_text')"
             @on-ok="handleSaveUpdateData">
             <div class="modal-warp">
                 <!-- 此处我们将会按照一个个数据添加，此处在建立完成下面的数据之后需要再次进行修改 -->
                 <div class="item">
-                    <label>{{$t('admin_columns.jobName')}}：</label>
+                    <label>{{$t('user_columns.name')}}：</label>
                     <Input
-                    v-model="jobName"
+                    v-model="name"
                     show-word-limit
                     maxlength="100"
                     :placeholder="$t('modal.placeholder')"
                     style="width: 350px"/>
                 </div>
                 <div class="item">
-                    <label>{{$t('admin_columns.jobClass')}}：</label>
+                    <label>{{$t('user_columns.userName')}}：</label>
                 <Input
-                    v-model="jobClass"
+                    v-model="userName"
                     show-word-limit
                     maxlength="100"
                     :placeholder="$t('modal.placeholder')"
                     style="width: 350px"/>
                 </div>
                 <div class="item">
-                    <label>{{$t('admin_columns.cronExpression')}}：</label>
+                    <label>{{$t('user_columns.password')}}：</label>
                     <Input
-                        v-model="cronExpression"
+                        v-model="password"
                         show-word-limit
                         maxlength="100"
                         :placeholder="$t('modal.placeholder')"
@@ -114,6 +114,7 @@ export default {
             id:"",
             name:"",
             userName:"",
+            password:"",
             ipAddress:"",
             //操作记录需要在修改页进行显示，但是要设置成不可修改
             //设置最后更新时间，在进行修改之后需要同步更新
@@ -187,9 +188,51 @@ export default {
                 slot: "action",
                 width: 200,
                 align: "center"
+                }
+            ];
         }
+    },
 
-            ]
+    created() {
+        this.getTableData();
+    },
+    methods:{
+        handleReset() {
+            this.page = 1;
+            this.limit = 10;
+            this.id = "";
+            this.name = "";
+            this.userName = "";
+            this.password= "";
+        },
+
+        //对应的是action列的内容
+        handleButtonSelect(row,key) {
+            switch (key) {
+                case 1:
+                    this.getRowData(row);
+                    break;
+                case 2:
+                    this.handleDeleteRow(row);
+                    break;
+                default:
+                    break;
+            }
+        },
+
+        handleSaveUpdateData() {
+            let data = {
+                name : this.name,
+                userName: this.userName,
+                password: this.password
+            };
+
+
+            //此处要开始接触到后端的内容
+            if (this.id) {
+                data.id = this.id;
+                this.$axios
+            }
         }
     }
 }

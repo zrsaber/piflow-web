@@ -17,7 +17,8 @@ module.exports = {
         admin: "Admin",
         admin_schedule: 'Schedule',
         stopsComponent: 'StopsComponent',
-        globalVariable: 'GlobalVariable'
+        globalVariable: 'GlobalVariable',
+        user:"User"
     },
     page: {
         prev_text: "Previous",
@@ -183,6 +184,16 @@ module.exports = {
         status: "Status",
         createTime: "CreateTime",
         action: "Actions"
+    },
+    user_columns:{
+        create_title: "Create User",
+        update_title: "Update User",
+        name: "Name",
+        userName: "userName",
+        status: "Status",
+        createTime: "CreateTime",
+        action: "Actions",
+        password:"password"
     },
     stopsComponent_columns: {
         name: "Name",

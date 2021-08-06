@@ -115,7 +115,6 @@ export default {
             name:"",
             userName:"",
             password:"",
-            ipAddress:"",
             //操作记录需要在修改页进行显示，但是要设置成不可修改
             //设置最后更新时间，在进行修改之后需要同步更新
             crtDttm:""
@@ -159,11 +158,7 @@ export default {
                     title:this.$t("user_columns.createTime"),
                     key:"createDttm"
                 },
-                //ip地址
-                {
-                    title:this.$t("user_columns.ipAddress"),
-                    key:"ipAddress"
-                },
+            
                 //status状态列
                 {
                     title:this.$t("user_columns.status"),
@@ -232,10 +227,146 @@ export default {
             if (this.id) {
                 data.id = this.id;
                 this.$axios
+                .get("/user/updateUserInfo",{params : data})
+                .then(res=>{
+                    if(res.data.code === 200) {
+                        this.$Modal.success({
+                            title:this.$t("tip.title"),
+                            content:`${this.name} ` + this.$t("tip.update_success_content")
+                        });
+                        this.isOpen = false;
+                        this.handleReset();
+                        this.getTableData();
+                    } else {
+                        this.$Message.error({
+                            content: `${this.name} ` + this.$t("tip.update_fail_content"),
+                            duration: 3
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.$Message.error({
+                    content: this.$t("tip.fault_content"),
+                    duration: 3
+                });
+            });
+            } else {
+                this.$axios
+                .get("/user/addUserInfo", { params: data })
+                .then(res => {
+                    if (res.data.code === 200) {
+                    this.$Modal.success({
+                        title: this.$t("tip.title"),
+                        content: `${this.name} ` + this.$t("tip.add_success_content")
+                    });
+                    this.isOpen = false;
+                    this.handleReset();
+                    this.getTableData();
+                } else {
+                    this.$Message.error({
+                    content: `${this.name} ` + this.$t("tip.add_fail_content"),
+                    duration: 3
+                    });
+                }
+            })
+                .catch(error => {
+                    console.log(error);
+                    this.$Message.error({
+                        content: this.$t("tip.fault_content"),
+                        duration: 3
+                    });
+                });
             }
+        },
+
+        handleDeleteRow(row) {
+            this.$Modal.confirm({
+                title: this.$t("tip.title"),
+                okText: this.$t("modal.confirm"),
+                cancelText: this.$t("modal.cancel_text"),
+                content: `${this.$t("modal.delete_content")} ${row.jobName}?`,
+                onOk: () => {
+                let data = {
+                    sysUserId: row.id
+                };
+                this.$axios
+                .get("/user/delUserInfo", { params: data })
+                .then(res => {
+                if (res.data.code === 200) {
+                    this.$Modal.success({
+                    title: this.$t("tip.title"),
+                    content:
+                    `${row.name} ` + this.$t("tip.delete_success_content")
+                    });
+                    this.handleReset();
+                    this.getTableData();
+                } else {
+                    this.$Message.error({
+                    content: this.$t("tip.delete_fail_content"),
+                    duration: 3
+                    });
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                this.$Message.error({
+                content: this.$t("tip.fault_content"),
+                duration: 3
+                });
+                });
+            }
+        })
+    },
+
+    getTableData() {
+        let data = { page: this.page, limit: this.limit };
+        if (this.param) {
+            data.param = this.param;
+        }
+        this.$axios
+        .get("/user/getUserListPage", {
+            params: data
+        })
+        .then(res => {
+            if (res.data.code === 200) {
+                let data = res.data.data;
+                this.tableData = data.map(item => {
+                item.state = item.status.text;
+                return item;
+                });
+                this.total = res.data.count;
+            } else {
+                this.$Message.error({
+                content: this.$t("tip.request_fail_content"),
+                duration: 3
+                });
+            }
+        })
+        .catch(error => {
+            console.log(error);
+                this.$Message.error({
+                content: this.$t("tip.fault_content"),
+                duration: 3
+            });
+        });
+    },
+    onPageChange(pageNo) {
+        this.page = pageNo;
+        this.getTableData()
+    },
+    onPageSizeChange(pageSize) {
+        this.limit = pageSize;
+        this.getTableData()
+    },
+
+    handleModalSwitch() {
+        this.isOpen = !this.isOpen;
         }
     }
-}
+
+    
+};
 </script>
 <style lang="scss" scoped>
 @import "./index.scss";

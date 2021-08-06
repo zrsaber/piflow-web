@@ -17,7 +17,8 @@ module.exports = {
         admin: "高级",
         admin_schedule: '监控同步任务',
         stopsComponent: '组件显示',
-        globalVariable: '全局变量'
+        globalVariable: '全局变量',
+        user:'用户管理'
     },
     page: {
         prev_text: "上一页",
@@ -183,6 +184,16 @@ module.exports = {
         status: "状态",
         createTime: "创建时间",
         action: "操作"
+    },
+    user_columns:{
+        create_title: "创建用户",
+        update_title: "更新用户",
+        name: "姓名",
+        userName: "用户名",
+        status: "状态",
+        createTime: "创建时间",
+        action: "操作",
+        password:"密码"
     },
     stopsComponent_columns: {
         name: "组件名称",

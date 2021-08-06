@@ -119,7 +119,7 @@ export default {
         this.handleReset();
       }
     },
-    param(val) {
+    param() {
       this.page = 1;
       this.limit = 10;
       this.getTableData();

@@ -55,7 +55,7 @@ public interface AdminUserService {
      *
      * @param isAdmin is admin
      * @param username   username
-     * @param userVo userVo
+     * @param user user
      * @return json
      */
     public String updateUser(boolean isAdmin, String username, SysUser user);

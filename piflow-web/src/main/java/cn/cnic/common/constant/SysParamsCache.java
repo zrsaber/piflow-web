@@ -277,10 +277,10 @@ public class SysParamsCache {
     public static String getFlowVisualizationDataUrl() {
         return INTERFACE_URL_HEAD + FLOW_VISUALIZATION_DATA_URL;
     }
-    
+
     // "flow debug" interface
     public static String TEST_DATA_PATH_URL;
-    
+
     @Value("${api.testDataPathUrl}")
     public void setTestDataPathUrl(String testDataPathUrl) {
         TEST_DATA_PATH_URL = testDataPathUrl;
@@ -418,7 +418,7 @@ public class SysParamsCache {
 
     public static String LIVY_SERVER;
 
-    @Value("${syspara.livyServer}")
+//    @Value("${syspara.livyServer}")
     public void setLivyServer(String livyServer) {
         LIVY_SERVER = livyServer;
     }

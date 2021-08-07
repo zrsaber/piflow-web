@@ -1,2 +1,73 @@
-package cn.cnic.component.user.service;public class AdminUserService {
+package cn.cnic.component.user.service;
+
+import cn.cnic.base.vo.UserVo;
+import cn.cnic.component.schedule.entity.Schedule;
+import cn.cnic.component.schedule.mapper.provider.ScheduleMapperProvider;
+import cn.cnic.component.schedule.vo.ScheduleVo;
+import cn.cnic.component.system.entity.SysUser;
+import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * 需要进行修改实验
+ */
+
+public interface AdminUserService {
+
+    /**
+     * Query getScheduleListPage (parameter space-time non-paging)
+     *
+     * @param isAdmin is admin
+     * @param username   username
+     * @param offset Number of pages
+     * @param limit  Number each page
+     * @param param  Search content
+     * @return json
+     */
+    public String getUserListPage( String username,boolean isAdmin, Integer offset, Integer limit, String param);
+
+    /**
+     * Add schedule
+     *
+     * @param username   username
+     * @param userVo userVo
+     * @return json
+     */
+    public String addUser(String username, UserVo userVo);
+
+    /**
+     * get ScheduleVo by id
+     *
+     * @param isAdmin is admin
+     * @param username username
+     * @param id       user id
+     * @return json
+     */
+    public String getUserById(boolean isAdmin, String username, String id);
+
+    /**
+     * Update user
+     *
+     * @param isAdmin is admin
+     * @param username   username
+     * @param userVo userVo
+     * @return json
+     */
+    public String updateUser(boolean isAdmin, String username, SysUser user);
+
+    /**
+     * Delete user
+     *
+     * @param isAdmin is admin
+     * @param username username
+     * @param id       user id
+     * @return json
+     */
+    public String delUser(boolean isAdmin, String username, String id);
+
 }

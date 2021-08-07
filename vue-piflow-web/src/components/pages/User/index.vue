@@ -160,22 +160,22 @@ export default {
                 },
             
                 //status状态列
-                {
-                    title:this.$t("user_columns.status"),
-                    key:"status",
-                    render: (h, params) => {
-                            const row = params.row;
-                            const color = row.status === 1 ? 'primary' : row.status === 2 ? 'success' : 'error';
-                            const text = row.status === 1 ? 'Working' : row.status === 2 ? 'Freezing' : 'Closing';
+                // {
+                //     title:this.$t("user_columns.status"),
+                //     key:"status",
+                //     render: (h, params) => {
+                //             // const row = params.row;
+                //             // const color = row.status === 1 ? 'primary' : row.status === 2 ? 'success' : 'error';
+                //             // const text = row.status === 1 ? 'Working' : row.status === 2 ? 'Freezing' : 'Closing';
 
-                            return h('Tag', {
-                                props: {
-                                    type: 'dot',
-                                    color: color
-                                }
-                            }, text);
-                        }
-                },
+                //             return h('Tag', {
+                //                 props: {
+                //                     type: 'dot',
+                //                     color: color
+                //                 }
+                //             }, text);
+                //         }
+                //},
 
                 //action操作
                 {
@@ -253,9 +253,10 @@ export default {
             });
             } else {
                 this.$axios
-                .get("/user/addUserInfo", { params: data })
+                .get("/register", { params: data })
                 .then(res => {
                     if (res.data.code === 200) {
+                        this.$Message.success('registration success！');
                     this.$Modal.success({
                         title: this.$t("tip.title"),
                         content: `${this.name} ` + this.$t("tip.add_success_content")

@@ -110,6 +110,7 @@ public class ScheduleServiceImpl implements IScheduleService {
      * @param id       schedule id
      * @return json
      */
+    @Override
     public String getScheduleVoById(boolean isAdmin, String username, String id) {
         // Judge whether the 'username' is empty
         if (StringUtils.isBlank(username)) {

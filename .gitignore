@@ -3,3 +3,6 @@ vue-piflow-web/node_modules
 piflow-web/piflow-web.iml
 piflow-web/target/
 vue-piflow-web/dist
+piflow-web/storage/
+piflow-web/src/main/resources/rebel.xml
+vue-piflow-web/.vscode/launch.json

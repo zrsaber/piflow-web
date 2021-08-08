@@ -7,11 +7,11 @@
             </div>
 
             <!-- 添加用户的按钮建立 -->
-            <div class="right">
+            <!-- <div class="right">
                 <span class="button-warp" @click="handleModalSwitch">
                     <Icon type="md-add" />
                 </span>
-            </div>
+            </div> -->
         </div>
 
         <!-- 搜索栏的建立，此处的搜索栏与系统的其他地方相同 -->
@@ -26,6 +26,7 @@
 
         <!-- 建立主体：表单 -->
         <Table border :columns="columns" :data="tableData">
+
             <!-- 建立操作页面 -->
             <template slot-scope="{ row }" slot="action">
                 <Tooltip content="Edit" placement="top-start">
@@ -65,6 +66,16 @@
             <div class="modal-warp">
                 <!-- 此处我们将会按照一个个数据添加，此处在建立完成下面的数据之后需要再次进行修改 -->
                 <div class="item">
+                    <label>{{$t('user_columns.username')}}：</label>
+                <Input
+                    v-model="username"
+                    show-word-limit
+                    maxlength="100"
+                    disabled placeholder="$t('modal.placeholder')"
+                    style="width: 350px"/>
+                </div>
+                
+                <div class="item">
                     <label>{{$t('user_columns.name')}}：</label>
                     <Input
                     v-model="name"
@@ -73,15 +84,7 @@
                     :placeholder="$t('modal.placeholder')"
                     style="width: 350px"/>
                 </div>
-                <div class="item">
-                    <label>{{$t('user_columns.userName')}}：</label>
-                <Input
-                    v-model="userName"
-                    show-word-limit
-                    maxlength="100"
-                    :placeholder="$t('modal.placeholder')"
-                    style="width: 350px"/>
-                </div>
+                
                 <div class="item">
                     <label>{{$t('user_columns.password')}}：</label>
                     <Input
@@ -90,6 +93,26 @@
                         maxlength="100"
                         :placeholder="$t('modal.placeholder')"
                         style="width: 350px"/>
+                </div>
+
+                <div class="item">
+                    <label>{{$t('user_columns.status')}}：</label>
+                        <Select 
+                        v-model="status" 
+                        :placeholder="$t('modal.placeholder')"
+                        style="width:350px">
+                            <Option v-for="(item, index) in statusList" :key="index" :label="item" :value="index" />
+                        </Select>
+                </div>
+
+                <div class="item">
+                    <label>{{$t('user_columns.role')}}：</label>
+                        <Select 
+                        v-model="role"
+                        :placeholder="$t('modal.placeholder')" 
+                        style="width:350px">
+                            <Option v-for="(item, index) in roleList" :key="index" :label="item" :value="index" />
+                        </Select>
                 </div>
             </div>
         </Modal>
@@ -108,16 +131,19 @@ export default {
             total:0,
             tableData:[],
             param:"",
+            statusList:['Working','Freezing','Closing'],
+            roleList:['ADMIN',"USER"],
 
             //下面是表格的初始化
             row:null,
             id:"",
             name:"",
-            userName:"",
+            username:"",
             password:"",
             //操作记录需要在修改页进行显示，但是要设置成不可修改
             //设置最后更新时间，在进行修改之后需要同步更新
-            crtDttm:""
+            crtDttm:"",
+            status:""
             //此处是否要对状态进行初始化，等待实验
         };
     },
@@ -149,33 +175,38 @@ export default {
                 },
                 //登陆账号
                 {
-                    title:this.$t("user_columns.userName"),
-                    key:"userName",
+                    title:this.$t("user_columns.username"),
+                    key:"username",
                     sortable:true
                 },
                 //创建时间
                 {
                     title:this.$t("user_columns.createTime"),
-                    key:"createDttm"
+                    key:"crtDttm"
                 },
             
                 //status状态列
-                // {
-                //     title:this.$t("user_columns.status"),
-                //     key:"status",
-                //     render: (h, params) => {
-                //             // const row = params.row;
-                //             // const color = row.status === 1 ? 'primary' : row.status === 2 ? 'success' : 'error';
-                //             // const text = row.status === 1 ? 'Working' : row.status === 2 ? 'Freezing' : 'Closing';
+                {
+                    title:this.$t("user_columns.status"),
+                    key:"status",
+                    
+                    render: (h, params) => {
+                            const row = params.row;
+                            const color = row.status === 0 ? 'primary' : row.status === 2 ? 'success' : 'error';
+                            const text = row.status === 0 ? 'Working' : row.status === 1 ? 'Freezing' : 'Closing';
 
-                //             return h('Tag', {
-                //                 props: {
-                //                     type: 'dot',
-                //                     color: color
-                //                 }
-                //             }, text);
-                //         }
-                //},
+                            return h('Tag', {
+                                props: {
+                                    type: 'dot',
+                                    color: color
+                                }
+                            }, text);
+                        }
+                },
+                {
+                    title:this.$t("user_columns.role"),
+                    key:"role"
+                },
 
                 //action操作
                 {
@@ -197,8 +228,9 @@ export default {
             this.limit = 10;
             this.id = "";
             this.name = "";
-            this.userName = "";
+            this.username = "";
             this.password= "";
+            this.status = "";
         },
 
         //对应的是action列的内容
@@ -218,8 +250,9 @@ export default {
         handleSaveUpdateData() {
             let data = {
                 name : this.name,
-                userName: this.userName,
-                password: this.password
+                username: this.username,
+                password: this.password,
+                role:this.role.text
             };
 
 
@@ -227,7 +260,7 @@ export default {
             if (this.id) {
                 data.id = this.id;
                 this.$axios
-                .get("/user/updateUserInfo",{params : data})
+                .get("/user/updateUser",{params : data})
                 .then(res=>{
                     if(res.data.code === 200) {
                         this.$Modal.success({
@@ -281,6 +314,40 @@ export default {
             }
         },
 
+        getRowData(row) {
+            this.$event.emit("loading", true);
+            this.$axios
+                .get("/user/getUserById", { params: { userId: row.id }})
+                .then(res => {
+                    this.$event.emit("loading", false);
+                    if (res.data.code === 200) {
+                    let data = res.data.sysUserVo;
+                    this.id = data.id;
+                    this.name = data.name;
+                    this.username = data.username;
+                    this.password = data.password;
+                    this.status = data.statusList;
+                    this.role  = data.role.stringValue;
+            // this.cronExpression = data.cronExpression;
+                    this.$event.emit("loading", false);
+                    this.isOpen = true;
+                } else {
+                    this.$Message.error({
+                        content: this.$t("tip.get_fail_content"),
+                        duration: 3
+                        });
+                    }
+                })
+            .catch(error => {
+                this.$event.emit("loading", false);
+                console.log(error);
+                this.$Message.error({
+                    content: this.$t("tip.fault_content"),
+                    duration: 3
+                });
+            });
+        },
+
         handleDeleteRow(row) {
             this.$Modal.confirm({
                 title: this.$t("tip.title"),
@@ -292,7 +359,7 @@ export default {
                     sysUserId: row.id
                 };
                 this.$axios
-                .get("/user/delUserInfo", { params: data })
+                .get("/user/delUser", { params: data })
                 .then(res => {
                 if (res.data.code === 200) {
                     this.$Modal.success({
@@ -333,7 +400,8 @@ export default {
             if (res.data.code === 200) {
                 let data = res.data.data;
                 this.tableData = data.map(item => {
-                item.state = item.status.text;
+                //item.status = item.status;
+                item.role = item.role.stringValue;
                 return item;
                 });
                 this.total = res.data.count;

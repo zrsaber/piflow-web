@@ -2,15 +2,10 @@ package cn.cnic.component.user.mapper.provider;
 
 import cn.cnic.base.utils.DateUtils;
 import cn.cnic.base.utils.SqlUtils;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.SysRoleType;
-import cn.cnic.component.schedule.entity.Schedule;
 import cn.cnic.component.system.entity.SysRole;
 import cn.cnic.component.system.entity.SysUser;
-import cn.cnic.component.user.mapper.AdminUserMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.directory.shared.kerberos.messages.TgsRep;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.jdbc.SQL;
 
 import javax.persistence.CascadeType;
@@ -30,8 +25,9 @@ public class AdminUserMapperProvider {
     private String lastUpdateUser;
     private String lastUpdateDttmStr;
     private long version;
-    private int enableFlag;
+    private boolean enableFlag;
     private String sex;
+    private Byte status;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sysUser")
     private List<SysRole> roles;
@@ -46,9 +42,11 @@ public class AdminUserMapperProvider {
         this.password = SqlUtils.preventSQLInjection(user.getPassword());
         this.name = SqlUtils.preventSQLInjection(user.getName());
         this.sex = SqlUtils.preventSQLInjection(user.getSex());
+        this.id = SqlUtils.preventSQLInjection(user.getId());
 
-        this.enableFlag = ((null != user.getEnableFlag() && user.getEnableFlag()) ? 1 : 0);
+        this.enableFlag = (null != user.getEnableFlag() && user.getEnableFlag());
         this.version = (null != user.getVersion() ? user.getVersion() : 0L);
+        this.status = (null != user.getStatus() ? user.getStatus() : 0);
         this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttm);
         this.lastUpdateUser = SqlUtils.preventSQLInjection(user.getLastUpdateUser());
 
@@ -78,11 +76,12 @@ public class AdminUserMapperProvider {
     }
 
     private void resetUser() {
-//        this.id = null;
+        this.id = null;
         this.username = null;
         this.lastUpdateDttmStr = null;
         this.version = 0L;
-        this.enableFlag = 1;
+        this.status = 0;
+        this.enableFlag = true;
         this.name = null;
         this.age = 0;
         this.sex = null;
@@ -119,19 +118,16 @@ public class AdminUserMapperProvider {
 
 
     public String getUserById(boolean isAdmin, String username, String id) {
-        if (StringUtils.isBlank(id)) {
-            return "SELECT 0";
+        String sqlStr = "SELECT 0";
+        if (isAdmin && StringUtils.isNotBlank(id)) {
+            StringBuffer sqlStrbuf = new StringBuffer();
+            sqlStrbuf.append("SELECT user.*,role.role ");
+            sqlStrbuf.append("FROM sys_user user, sys_role role ");
+            sqlStrbuf.append("WHERE enable_flag = 1 and user.id = role.fk_sys_user_id ");
+            sqlStrbuf.append("AND ");
+            sqlStrbuf.append("user.id = " + SqlUtils.addSqlStrAndReplace(id) + " ");
+            sqlStr = sqlStrbuf.toString();
         }
-        StringBuffer strBuf = new StringBuffer();
-        strBuf.append("select * ");
-        strBuf.append("from sys_user ");
-        strBuf.append("where ");
-        strBuf.append("enable_flag = 1 ");
-        strBuf.append("and id = " + SqlUtils.preventSQLInjection(id) + " ");
-        if (!isAdmin) {
-            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
-        }
-        String sqlStr = strBuf.toString();
         return sqlStr;
     }
 
@@ -146,9 +142,9 @@ public class AdminUserMapperProvider {
         String sqlStr = "SELECT 0";
         if (isAdmin) {
             StringBuffer sqlStrbuf = new StringBuffer();
-            sqlStrbuf.append("SELECT * ");
-            sqlStrbuf.append("FROM sys_user ");
-            sqlStrbuf.append("WHERE enable_flag = 1 ");
+            sqlStrbuf.append("SELECT user.*,role.role ");
+            sqlStrbuf.append("FROM sys_user user,sys_role role ");
+            sqlStrbuf.append("WHERE enable_flag = 1 AND  user.id = role.fk_sys_user_id ");
             if (StringUtils.isNotBlank(param)) {
                 sqlStrbuf.append("AND ");
                 sqlStrbuf.append("( ");
@@ -189,14 +185,11 @@ public class AdminUserMapperProvider {
 
             // handle other fields
             sql.SET("enable_flag = " + enableFlag);
-            sql.SET("id = " + this.id);
-            sql.SET("sex = " + this.sex);
             sql.SET("username = " + this.username);
             sql.SET("name = " + this.name);
             sql.SET("password = " + this.password);
-            sql.SET("age = " + this.age);
-            sql.SET("lastUpdateUser = " + this.lastUpdateUser);
-            sql.SET("lastUpdateDttmStr = " + this.lastUpdateDttmStr);
+            sql.SET("status = " + this.status);
+
             sql.WHERE("version = " + this.version);
             sql.WHERE("id = " + this.id);
             sqlStr = sql.toString();

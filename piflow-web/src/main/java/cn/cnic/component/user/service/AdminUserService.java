@@ -5,6 +5,7 @@ import cn.cnic.component.schedule.entity.Schedule;
 import cn.cnic.component.schedule.mapper.provider.ScheduleMapperProvider;
 import cn.cnic.component.schedule.vo.ScheduleVo;
 import cn.cnic.component.system.entity.SysUser;
+import cn.cnic.component.system.vo.SysUserVo;
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -55,10 +56,10 @@ public interface AdminUserService {
      *
      * @param isAdmin is admin
      * @param username   username
-     * @param user user
+     * @param sysUserVo user
      * @return json
      */
-    public String updateUser(boolean isAdmin, String username, SysUser user);
+    public String update(boolean isAdmin, String username, SysUserVo sysUserVo);
 
     /**
      * Delete user

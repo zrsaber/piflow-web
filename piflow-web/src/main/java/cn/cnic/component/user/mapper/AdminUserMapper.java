@@ -13,10 +13,12 @@ import cn.cnic.component.system.vo.SysScheduleVo;
 import cn.cnic.component.system.vo.SysUserVo;
 import cn.cnic.component.user.mapper.provider.AdminUserMapperProvider;
 import org.apache.ibatis.annotations.*;
+import org.springframework.security.access.method.P;
 
 import java.util.List;
 
 @Mapper
+
 public interface AdminUserMapper {
 
     @InsertProvider(type = AdminUserMapperProvider.class, method = "insert")
@@ -26,7 +28,7 @@ public interface AdminUserMapper {
     public int update(SysUser user);
 
     @SelectProvider(type = AdminUserMapperProvider.class, method = "getUserById")
-    public SysUser getUserById(boolean isAdmin, String username, String id);
+    public SysUser getUserById(boolean isAdmin,String username, @Param("id") String id);
 
 //    /**
 //     * getSysScheduleListByStatus

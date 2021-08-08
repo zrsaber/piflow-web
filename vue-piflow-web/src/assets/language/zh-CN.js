@@ -189,11 +189,12 @@ module.exports = {
         create_title: "创建用户",
         update_title: "更新用户",
         name: "姓名",
-        userName: "用户名",
+        username: "用户名",
         status: "状态",
         createTime: "创建时间",
         action: "操作",
-        password:"密码"
+        password:"密码",
+        role:"权限"
     },
     stopsComponent_columns: {
         name: "组件名称",

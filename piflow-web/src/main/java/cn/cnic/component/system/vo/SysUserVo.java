@@ -1,13 +1,24 @@
 package cn.cnic.component.system.vo;
 
+import cn.cnic.common.Eunm.SysRoleType;
+import cn.cnic.component.system.entity.SysRole;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.io.Serializable;
+import java.util.Date;
 
 
 public class SysUserVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String id;
+    public String id;
+
+    private Date crtDttm;
+    private Date lastUpdateDttm;
+
+    private Boolean enableFlag;
 
     private String username;
 
@@ -18,6 +29,11 @@ public class SysUserVo implements Serializable {
     private Integer age;
 
     private String sex;
+
+    private Byte status;
+
+    @Enumerated(EnumType.STRING)
+    private SysRoleType role;
 
     public String getId() {
         return id;
@@ -67,4 +83,44 @@ public class SysUserVo implements Serializable {
         this.sex = sex;
     }
 
+
+    public Date getCrtDttm() {
+        return crtDttm;
+    }
+
+    public void setCrtDttm(Date crtDttm) {
+        this.crtDttm = crtDttm;
+    }
+
+    public Date getLastUpdateDttm() {
+        return lastUpdateDttm;
+    }
+
+    public void setLastUpdateDttm(Date lastUpdateDttm) {
+        this.lastUpdateDttm = lastUpdateDttm;
+    }
+
+    public Boolean getEnableFlag() {
+        return enableFlag;
+    }
+
+    public void setEnableFlag(Boolean enableFlag) {
+        this.enableFlag = enableFlag;
+    }
+
+    public SysRoleType getRole() {
+        return role;
+    }
+
+    public void setRole(SysRoleType role) {
+        this.role = role;
+    }
+
+    public Byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(Byte status) {
+        this.status = status;
+    }
 }

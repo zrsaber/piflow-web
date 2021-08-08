@@ -1,6 +1,8 @@
 package cn.cnic.component.system.entity;
 
 import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.common.Eunm.SysRoleType;
+import io.swagger.models.auth.In;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,10 +27,15 @@ public class SysUser extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private String name;
 
+    private Byte status;
+
     private Integer age;
 
     private String sex;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sysUser")
     private List<SysRole> roles;
+
+    @Enumerated(EnumType.STRING)
+    private SysRoleType role;
 }

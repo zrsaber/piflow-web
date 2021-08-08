@@ -3,6 +3,7 @@ package cn.cnic.controller;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.system.entity.SysUser;
+import cn.cnic.component.system.vo.SysUserVo;
 import cn.cnic.component.user.service.AdminUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,27 +33,28 @@ public class AdminUserCtrl {
         return adminUserServiceImpl.getUserListPage(username, isAdmin, page, limit, param);
     }
 
-    @RequestMapping("/updateUserInfo")
+    @RequestMapping("/updateUser")
     @ResponseBody
-    public String updateUserInfo(SysUser user) {
+    public String updateUserInfo(SysUserVo sysUserVo) {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
-        return  adminUserServiceImpl.updateUser(isAdmin,username,user);
+        return  adminUserServiceImpl.update(isAdmin,username,sysUserVo);
     }
 
-    @RequestMapping("/delUserInfo")
+    @RequestMapping("/delUser")
     @ResponseBody
-    public String delUserInfo(String id) {
+    public String delUser(String sysUserId) {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
-        return  adminUserServiceImpl.delUser(isAdmin,username,id);
+        return  adminUserServiceImpl.delUser(isAdmin,username,sysUserId);
     }
 
-    @RequestMapping("/addUserInfo")
+    @RequestMapping("/getUserById")
     @ResponseBody
-    public String addUserInfo(UserVo userVo ) {
+    public String getScheduleById(String userId) {
         String username = SessionUserUtil.getCurrentUsername();
-        return  adminUserServiceImpl.addUser(username,userVo);
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return adminUserServiceImpl.getUserById( isAdmin,username, userId);
     }
 
 

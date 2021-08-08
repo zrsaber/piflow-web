@@ -53,11 +53,13 @@ public class LoginCtrl {
         String pw = request.getParameter("pw");
         String name = request.getParameter("name");
         String sex = request.getParameter("sex");
+        String status = request.getParameter("status");
         SysUserVo sysUserVo = new SysUserVo();
         sysUserVo.setUsername(username);
         sysUserVo.setPassword(pw);
         sysUserVo.setSex(sex);
         sysUserVo.setName(name);
+        sysUserVo.setStatus(Byte.valueOf(status));
         return sysUserServiceImpl.registerUser(sysUserVo);
     }
 

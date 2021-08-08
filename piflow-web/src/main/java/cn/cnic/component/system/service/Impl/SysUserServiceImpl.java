@@ -1,5 +1,6 @@
 package cn.cnic.component.system.service.Impl;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -149,6 +150,7 @@ public class SysUserServiceImpl implements ISysUserService {
 		sysUser.setName(sysUserVo.getName());
 		sysUser.setAge(sysUserVo.getAge());
 		sysUser.setSex(sysUserVo.getSex());
+		sysUser.setStatus(sysUserVo.getStatus());
 
 		List<SysRole> sysRoleList = new ArrayList<>();
 		SysRole sysRole = new SysRole();
@@ -177,6 +179,7 @@ public class SysUserServiceImpl implements ISysUserService {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		// 生成token
 		final UserVo userVo = (UserVo) authentication.getPrincipal();
+
 		final String token = jwtTokenUtil.generateAccessToken(userVo);
 		// 存储token
 		jwtTokenUtil.putToken(username, token);
@@ -188,6 +191,12 @@ public class SysUserServiceImpl implements ISysUserService {
 
 	private Authentication authenticate(String username, String password) {
 		try {
+			SysUser user = sysUserTransactional.findUserByUserName(username);
+			Byte status = user.getStatus();
+			if (status != 0) {
+				return  authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(false,false));
+
+			}
 			// 该方法会去调用userDetailsService.loadUserByUsername()去验证用户名和密码，如果正确，则存储该用户名密码到“security
 			// 的 context中”
 			return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));

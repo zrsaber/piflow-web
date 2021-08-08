@@ -12,6 +12,9 @@ public interface SysRoleMapper {
     @Select("select Max(id) from sys_role")
     public long getMaxId();
 
+    @Select("select b.id from sys_role a,sys_user b where a.fk_sys_user_id=b.id and b.username=#{username}")
+    public String getIdByUserName(String username);
+
     /**
      * getSysRoleListBySysUserId
      *

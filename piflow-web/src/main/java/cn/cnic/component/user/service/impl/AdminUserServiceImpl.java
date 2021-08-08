@@ -4,11 +4,16 @@ import cn.cnic.base.BaseHibernateModelNoId;
 import cn.cnic.base.BaseHibernateModelNoIdUtils;
 import cn.cnic.base.utils.*;
 import cn.cnic.base.vo.UserVo;
+import cn.cnic.common.Eunm.ScheduleState;
+import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.schedule.entity.Schedule;
 import cn.cnic.component.schedule.vo.ScheduleVo;
+import cn.cnic.component.system.entity.SysRole;
 import cn.cnic.component.system.entity.SysSchedule;
 import cn.cnic.component.system.entity.SysUser;
+import cn.cnic.component.system.mapper.SysRoleMapper;
 import cn.cnic.component.system.mapper.SysScheduleMapper;
+import cn.cnic.component.system.mapper.SysUserMapper;
 import cn.cnic.component.system.vo.SysUserVo;
 import cn.cnic.component.user.mapper.AdminUserMapper;
 import cn.cnic.component.user.service.AdminUserService;
@@ -23,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -36,6 +42,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Resource
     private AdminUserMapper userMapper;
+
+    @Resource
+    private SysRoleMapper roleMapper;
 
     /**
      * 进行分页
@@ -54,6 +63,13 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
         Page<SysUserVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         userMapper.getUserList(isAdmin, username, param);
+        String id = roleMapper.getIdByUserName(username);
+        List<SysRole> roleListBySysUserId = roleMapper.getSysRoleListBySysUserId(id);
+        for (SysRole sysRole : roleListBySysUserId) {
+            SysRoleType role = sysRole.getRole();
+            String roleValue = role.getValue();
+
+        }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
@@ -89,78 +105,78 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public String getUserById(boolean isAdmin, String username, String id) {
-        // Judge whether the 'username' is empty
-        if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+    public String getUserById(boolean isAdmin, String username, String userId) {
+       SysUser sysUser = userMapper.getUserById(isAdmin,username,userId);
+        List<SysRole> roleListBySysUserId = roleMapper.getSysRoleListBySysUserId(userId);
+        for (SysRole sysRole : roleListBySysUserId) {
+            SysRoleType role = sysRole.getRole();
+            sysUser.setRole(role);
         }
-        // Judge whether the 'id' is empty
-        if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+        if (null == sysUser) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
         }
-        // search
-        SysUser userVoById = userMapper.getUserById(isAdmin, username, id);
-        // Judge whether the query result is empty
-        if (null == userVoById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
-        }
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("userVo", userVoById);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("sysUserVo", sysUser);
     }
 
     @Override
-    public String updateUser(boolean isAdmin, String username, SysUser user) {
-        // Judge whether the 'username' is empty
+    public String update(boolean isAdmin, String username, SysUserVo sysUserVo) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
-        // Judge whether the 'userVo' is empty
-        if (null == user) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+        if (null == sysUserVo) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter is empty");
         }
-        // Judge whether the 'userVo Id' is empty
-        if (StringUtils.isBlank(user.getId())) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+        String id = sysUserVo.getId();
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
         }
-        // query
-        SysUser userVoById = userMapper.getUserById(isAdmin, username, user.getId());
-        // Judge whether the query result is empty
-        if (null == userVoById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID " + user.getId());
+        SysUser sysUserById = userMapper.getUserById(isAdmin, username, id);
+        if (null == sysUserById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The task for which the current Id does not exist");
         }
-        // Copy scheduleVo data to userById
-        BeanUtils.copyProperties(user, userVoById);
-//        //set Operator information
-//        userVoById.setLastUpdateDttm(new Date());
-//        scheduleById.setLastUpdateUser(username);
-        int update = userMapper.update(userVoById);
-        if (update <= 0) {
+        try {
+            sysUserById.setName(sysUserVo.getName());
+            sysUserById.setUsername(sysUserVo.getUsername());
+            sysUserById.setPassword(sysUserVo.getPassword());
+            sysUserById.setEnableFlag(sysUserById.getEnableFlag());
+            sysUserById.setRole(sysUserById.getRole());
+            sysUserById.setStatus(sysUserById.getStatus());
+            int update = userMapper.update(sysUserById);
+            if (update <= 0) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            }
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+        } catch (Exception e) {
+            logger.error("update failed", e);
             return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
     }
 
     @Override
-    public String delUser(boolean isAdmin, String username, String id) {
-        // Judge whether the 'username' is empty
+    public String delUser(boolean isAdmin, String username, String sysUserId) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
-        // Judge whether the 'id' is empty
-        if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+        if (StringUtils.isBlank(sysUserId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
         }
-        // query
-        SysUser userVoById = userMapper.getUserById(isAdmin, username, id);
-        // Judge whether the query result is empty
-        if (null == userVoById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data does not exist");
+        SysUser sysUserById = userMapper.getUserById(isAdmin,username,sysUserId);
+        if (null == sysUserById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The task for which the current Id does not exist");
         }
-        // delete
-        int delUserById = userMapper.delUserById(isAdmin, username, id);
-        // Judge whether it is successful or not
-        if (delUserById <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("del failed");
+        try {
+
+            sysUserById.setEnableFlag(false);
+            sysUserById.setLastUpdateDttm(new Date());
+            sysUserById.setLastUpdateUser(username);
+            int update = userMapper.update(sysUserById);
+            if (update <= 0) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            }
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Started successfully");
+        } catch (Exception e) {
+            logger.error("delete failed", e);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("delete failed");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
     }
 }

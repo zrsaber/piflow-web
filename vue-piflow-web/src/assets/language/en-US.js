@@ -189,11 +189,12 @@ module.exports = {
         create_title: "Create User",
         update_title: "Update User",
         name: "Name",
-        userName: "userName",
+        username: "userName",
         status: "Status",
         createTime: "CreateTime",
         action: "Actions",
-        password:"password"
+        password:"Password",
+        role:"Role"
     },
     stopsComponent_columns: {
         name: "Name",

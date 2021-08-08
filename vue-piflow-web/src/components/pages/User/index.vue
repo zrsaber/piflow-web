@@ -326,7 +326,7 @@ export default {
                     this.name = data.name;
                     this.username = data.username;
                     this.password = data.password;
-                    this.status = data.statusList;
+                    this.status = data.status;
                     this.role  = data.role.stringValue;
             // this.cronExpression = data.cronExpression;
                     this.$event.emit("loading", false);

@@ -138,9 +138,8 @@ public class AdminUserServiceImpl implements AdminUserService {
             sysUserById.setName(sysUserVo.getName());
             sysUserById.setUsername(sysUserVo.getUsername());
             sysUserById.setPassword(sysUserVo.getPassword());
-            sysUserById.setEnableFlag(sysUserById.getEnableFlag());
-            sysUserById.setRole(sysUserById.getRole());
-            sysUserById.setStatus(sysUserById.getStatus());
+            sysUserById.setRole(sysUserVo.getRole());
+            sysUserById.setStatus(sysUserVo.getStatus());
             int update = userMapper.update(sysUserById);
             if (update <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);

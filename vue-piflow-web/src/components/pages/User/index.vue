@@ -105,15 +105,6 @@
                         </Select>
                 </div>
 
-                <div class="item">
-                    <label>{{$t('user_columns.role')}}：</label>
-                        <Select 
-                        v-model="role"
-                        :placeholder="$t('modal.placeholder')" 
-                        style="width:350px">
-                            <Option v-for="(item, index) in roleList" :key="index" :label="item" :value="index" />
-                        </Select>
-                </div>
             </div>
         </Modal>
     </section>
@@ -132,7 +123,6 @@ export default {
             tableData:[],
             param:"",
             statusList:['Working','Freezing','Closing'],
-            roleList:['ADMIN',"USER"],
 
             //下面是表格的初始化
             row:null,
@@ -193,7 +183,7 @@ export default {
                     render: (h, params) => {
                             const row = params.row;
                             const color = row.status === 0 ? 'primary' : row.status === 2 ? 'success' : 'error';
-                            const text = row.status === 0 ? 'Working' : row.status === 1 ? 'Freezing' : 'Closing';
+                            const text = this.statusList[row.status];
 
                             return h('Tag', {
                                 props: {
@@ -252,6 +242,7 @@ export default {
                 name : this.name,
                 username: this.username,
                 password: this.password,
+                status: this.status,
                 role:this.role.text
             };
 
@@ -327,8 +318,7 @@ export default {
                     this.username = data.username;
                     this.password = data.password;
                     this.status = data.status;
-                    this.role  = data.role.stringValue;
-            // this.cronExpression = data.cronExpression;
+                    this.role  = data.role.text;
                     this.$event.emit("loading", false);
                     this.isOpen = true;
                 } else {

@@ -18,7 +18,8 @@ module.exports = {
         admin_schedule: '监控同步任务',
         stopsComponent: '组件显示',
         globalVariable: '全局变量',
-        user:'用户管理'
+        user:'用户管理',
+        log:'通知管理'
     },
     page: {
         prev_text: "上一页",

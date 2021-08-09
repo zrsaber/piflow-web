@@ -18,7 +18,8 @@ module.exports = {
         admin_schedule: 'Schedule',
         stopsComponent: 'StopsComponent',
         globalVariable: 'GlobalVariable',
-        user:"User"
+        user:"User",
+        log:"Log"
     },
     page: {
         prev_text: "Previous",
@@ -195,6 +196,10 @@ module.exports = {
         action: "Actions",
         password:"Password",
         role:"Role"
+    },
+
+    log_columns:{
+
     },
     stopsComponent_columns: {
         name: "Name",

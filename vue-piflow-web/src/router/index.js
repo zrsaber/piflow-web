@@ -113,9 +113,9 @@ export default new Router({
               component: () => import('../components/pages/User')
             },
             {
-              path: '/mange',
-              name: 'mange',
-              component: () => import('../components/pages/User/index')
+              path:'/log',
+              name:'log',
+              components:() => import('../components/pages/User/log')
             }
           ]
         },

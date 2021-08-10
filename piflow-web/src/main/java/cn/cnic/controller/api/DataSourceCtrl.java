@@ -1,5 +1,8 @@
 package cn.cnic.controller.api;
 
+import cn.cnic.component.user.mapper.AdminLogMapper;
+import cn.cnic.component.user.service.AdminLogService;
+import cn.cnic.component.user.service.LogHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +24,9 @@ public class DataSourceCtrl {
 
     @Autowired
     private IStopsService stopsServiceImpl;
+
+    @Autowired
+    private LogHelper logHelper;
 
     @RequestMapping(value = "/getDatasourceList", method = RequestMethod.POST)
     @ResponseBody
@@ -51,6 +57,7 @@ public class DataSourceCtrl {
     public String saveOrUpdate(DataSourceVo dataSourceVo, boolean isSynchronize) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("saveOrUpdate" + dataSourceVo.getDataSourceName(),currentUsername);
         return dataSourceImpl.saveOrUpdate(currentUsername, isAdmin, dataSourceVo, isSynchronize);
     }
 
@@ -67,6 +74,7 @@ public class DataSourceCtrl {
     public String deleteDataSource(String dataSourceId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("deleteDataSource" + dataSourceId,currentUsername);
         return dataSourceImpl.deleteDataSourceById(currentUsername, isAdmin, dataSourceId);
     }
 

@@ -1,10 +1,13 @@
 package cn.cnic.controller.system;
 
+import cn.cnic.base.utils.IpUtil;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.system.service.ISysUserService;
 import cn.cnic.component.system.vo.SysUserVo;
+import cn.cnic.component.user.service.LogHelper;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +29,9 @@ public class LoginCtrl {
 
     @Autowired
     private ISysUserService sysUserServiceImpl;
+
+    @Autowired
+    private LogHelper logHelper;
 
     @RequestMapping("/login")
     public ModelAndView login(ModelAndView modelAndView) {
@@ -54,12 +60,15 @@ public class LoginCtrl {
         String name = request.getParameter("name");
         String sex = request.getParameter("sex");
         String status = request.getParameter("status");
+        String ipAddr = IpUtil.getIpAddr(request);
         SysUserVo sysUserVo = new SysUserVo();
         sysUserVo.setUsername(username);
         sysUserVo.setPassword(pw);
         sysUserVo.setSex(sex);
         sysUserVo.setName(name);
         sysUserVo.setStatus(Byte.valueOf(status));
+        sysUserVo.setLastLoginIp(ipAddr);
+        logHelper.logAuthSucceed("create user",username);
         return sysUserServiceImpl.registerUser(sysUserVo);
     }
 

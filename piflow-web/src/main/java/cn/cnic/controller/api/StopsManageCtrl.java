@@ -2,6 +2,7 @@ package cn.cnic.controller.api;
 
 import javax.annotation.Resource;
 
+import cn.cnic.component.user.service.LogHelper;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,6 +31,9 @@ public class StopsManageCtrl {
     
     @Resource
     private IStopsComponentManageService stopsComponentManageServiceImpl;
+
+    @Resource
+    private LogHelper logHelper;
     
     /**
      * stopsComponentList all
@@ -57,6 +61,7 @@ public class StopsManageCtrl {
     public String updatestopsComponentIsShow(@ApiParam(value = "stopsManage", required = true)UpdatestopsComponentIsShow stopsManage) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("updatestopsComponentIsShow " + stopsManage.getStopsGroups(),username);
         return stopsComponentManageServiceImpl.updateStopsComponentIsShow(username, isAdmin,stopsManage);
     }
 
@@ -87,6 +92,7 @@ public class StopsManageCtrl {
     public String runStops(@ApiParam(value = "runStopsVo", required = true)RunStopsVo runStopsVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("runStops " + runStopsVo.getStopsId(),username);
         return stopsServiceImpl.runStops(username, isAdmin, runStopsVo);
     }
 }

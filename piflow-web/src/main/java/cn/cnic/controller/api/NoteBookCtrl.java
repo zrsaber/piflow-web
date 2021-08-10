@@ -2,6 +2,7 @@ package cn.cnic.controller.api;
 
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.livy.service.INoteBookService;
+import cn.cnic.component.user.service.LogHelper;
 import cn.cnic.controller.requestVo.NoteBookVoRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
@@ -17,6 +18,9 @@ public class NoteBookCtrl {
     @Resource
     private INoteBookService noteBookServiceImpl;
 
+    @Resource
+    private LogHelper logHelper;
+
     /**
      * saveOrUpdateNoteBook
      *
@@ -29,6 +33,7 @@ public class NoteBookCtrl {
     public String saveOrUpdateNoteBook(@ApiParam(value = "noteBookVo", required = true) NoteBookVoRequest noteBookVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("saveOrUpdateNoteBook " + noteBookVo.getName(),currentUsername);
         return noteBookServiceImpl.saveOrUpdateNoteBook(currentUsername, isAdmin, noteBookVo, false);
     }
 
@@ -57,6 +62,7 @@ public class NoteBookCtrl {
     public String deleteNoteBook(@ApiParam(value = "noteBookId", required = true)String noteBookId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("deleteNoteBook " + noteBookId,currentUsername);
         return noteBookServiceImpl.deleteNoteBook(currentUsername, isAdmin, noteBookId);
     }
 
@@ -89,6 +95,7 @@ public class NoteBookCtrl {
     public String startNoteBookSession(String noteBookId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("startNoteBookSession " + noteBookId,currentUsername);
         return noteBookServiceImpl.startNoteBookSession(currentUsername, isAdmin, noteBookId);
     }
 
@@ -103,6 +110,7 @@ public class NoteBookCtrl {
     public String deleteNoteBookSession(String noteBookId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("deleteNoteBookSession " + noteBookId,currentUsername);
         return noteBookServiceImpl.delNoteBookSession(currentUsername, isAdmin, noteBookId);
     }
 

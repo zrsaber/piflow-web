@@ -5,6 +5,7 @@ import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.process.service.IProcessGroupService;
 import cn.cnic.component.process.service.IProcessService;
+import cn.cnic.component.user.service.LogHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,9 @@ public class ProcessGroupCtrl {
 
     @Resource
     private IProcessService processServiceImpl;
+
+    @Resource
+    private LogHelper logHelper;
 
 
     /**
@@ -130,6 +134,7 @@ public class ProcessGroupCtrl {
         String checkpoint = request.getParameter("checkpointStr");
         String runMode = request.getParameter("runMode");
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("runProcessGroup " + runMode,username);
         return processGroupServiceImpl.startProcessGroup(username, id, checkpoint, runMode);
     }
 
@@ -144,6 +149,8 @@ public class ProcessGroupCtrl {
     @ResponseBody
     public String stopProcessGroup(HttpServletRequest request, Model model) {
         String processGroupId = request.getParameter("processGroupId");
+        String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("stopProcessGroup " + processGroupId ,username);
         return processGroupServiceImpl.stopProcessGroup(SessionUserUtil.getCurrentUsername(), SessionUserUtil.isAdmin(), processGroupId);
     }
 
@@ -157,6 +164,8 @@ public class ProcessGroupCtrl {
     @ResponseBody
     public String delProcessGroup(HttpServletRequest request) {
         String processGroupID = request.getParameter("processGroupId");
+        String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("delProcessGroup " + processGroupID , username);
         return processGroupServiceImpl.delProcessGroup(SessionUserUtil.getCurrentUsername(), SessionUserUtil.isAdmin(), processGroupID);
     }
 

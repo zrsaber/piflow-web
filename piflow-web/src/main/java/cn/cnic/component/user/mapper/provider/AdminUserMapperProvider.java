@@ -28,6 +28,7 @@ public class AdminUserMapperProvider {
     private boolean enableFlag;
     private String sex;
     private Byte status;
+    private String lastLoginIp;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sysUser")
     private List<SysRole> roles;
@@ -49,28 +50,7 @@ public class AdminUserMapperProvider {
         this.status = (null != user.getStatus() ? user.getStatus() : 0);
         this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttm);
         this.lastUpdateUser = SqlUtils.preventSQLInjection(user.getLastUpdateUser());
-
-
-        /**
-         * <p>
-         *     role的获取需要解决
-         * </p>
-         */
-//        List<SysRole> roles = user.getRoles();
-//        this.roles = SqlUtils.preventSQLInjection(String.valueOf(roles))
-
-//        // Selection field
-//        String planStartTime = (null != schedule.getPlanStartTime() ? DateUtils.dateTimesToStr(schedule.getPlanStartTime()) : null);
-//        String planEndTime = (null != schedule.getPlanEndTime() ? DateUtils.dateTimesToStr(schedule.getPlanEndTime()) : null);
-//        this.scheduleId = SqlUtils.preventSQLInjection(schedule.getScheduleId());
-//        this.type = SqlUtils.preventSQLInjection(schedule.getType());
-//        this.statusStr = SqlUtils.preventSQLInjection(null != schedule.getStatus() ? schedule.getStatus().name() : "INIT");
-//        this.cronExpression = SqlUtils.preventSQLInjection(schedule.getCronExpression());
-//        this.planStartTimeStr = SqlUtils.preventSQLInjection(planStartTime);
-//        this.planEndTimeStr = SqlUtils.preventSQLInjection(planEndTime);
-//        this.scheduleRunTemplateId = SqlUtils.preventSQLInjection(schedule.getScheduleRunTemplateId());
-//        this.scheduleProcessTemplateId = SqlUtils.preventSQLInjection(schedule.getScheduleProcessTemplateId());
-
+        this.lastLoginIp=SqlUtils.preventSQLInjection(user.getLastLoginIp());
 
         return true;
     }
@@ -85,12 +65,13 @@ public class AdminUserMapperProvider {
         this.name = null;
         this.age = 0;
         this.sex = null;
+        this.lastLoginIp = null;
     }
 
     /**
      * insert user
      *
-     * @param user schedule
+     * @param user user
      * @return string sql
      */
     public String insert(SysUser user) {
@@ -132,7 +113,7 @@ public class AdminUserMapperProvider {
     }
 
 
-    public List<SysUser> getUserListByStatus(boolean isAdmin, SysRoleType status) {
+    public String getUserListByStatus(boolean isAdmin, SysRoleType status) {
 
         return null;
     }
@@ -189,6 +170,7 @@ public class AdminUserMapperProvider {
             sql.SET("name = " + this.name);
             sql.SET("password = " + this.password);
             sql.SET("status = " + this.status);
+            sql.SET("last_login_ip = " + this.lastLoginIp);
 
             sql.WHERE("version = " + this.version);
             sql.WHERE("id = " + this.id);
@@ -211,6 +193,7 @@ public class AdminUserMapperProvider {
         strBuf.append("enable_flag = 0 , ");
         strBuf.append("last_update_user = " + SqlUtils.preventSQLInjection(username) + " , ");
         strBuf.append("last_update_dttm = " + SqlUtils.preventSQLInjection(lastUpdateDttm) + " ");
+        strBuf.append("last_login_ip = " + SqlUtils.preventSQLInjection(lastLoginIp) + " ");
         strBuf.append("where ");
         strBuf.append("enable_flag = 1 ");
         strBuf.append("and id = " + SqlUtils.preventSQLInjection(id) + " ");

@@ -1,5 +1,6 @@
 package cn.cnic.controller.api;
 
+import cn.cnic.component.user.service.LogHelper;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -38,6 +39,9 @@ public class ProcessCtrl {
 
     @Autowired
     IProcessPathService processPathServiceImpl;
+
+    @Autowired
+    LogHelper logHelper;
 
 
     /**
@@ -130,6 +134,7 @@ public class ProcessCtrl {
                              @ApiParam(value = "checkpointStr")String checkpointStr,
                              @ApiParam(value = "runMode")String runMode) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("runProcess" + id,username);
         return processServiceImpl.startProcess(username, id, checkpointStr, runMode);
     }
 
@@ -144,6 +149,7 @@ public class ProcessCtrl {
     public String stopProcess(@ApiParam(value = "processId", required = true)String processId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("stopProcess" + processId,username);
         return processServiceImpl.stopProcess(username, isAdmin, processId);
     }
 
@@ -157,6 +163,7 @@ public class ProcessCtrl {
     @ResponseBody
     public String delProcess(@ApiParam(value = "processID", required = true)String processID) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("delProcess" + processID,username);
         return processServiceImpl.delProcess(username, processID);
     }
 

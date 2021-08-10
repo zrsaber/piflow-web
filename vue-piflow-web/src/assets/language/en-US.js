@@ -199,7 +199,11 @@ module.exports = {
     },
 
     log_columns:{
-
+        username: "userName",
+        lastLoginIp:"ip",
+        createTime: "createTime",
+        lastUpdateTime:"lastUpdateTime",
+        action: "action"
     },
     stopsComponent_columns: {
         name: "Name",

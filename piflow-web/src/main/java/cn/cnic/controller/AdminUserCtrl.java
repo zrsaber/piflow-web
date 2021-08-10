@@ -5,6 +5,7 @@ import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.system.vo.SysUserVo;
 import cn.cnic.component.user.service.AdminUserService;
+import cn.cnic.component.user.service.LogHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,9 @@ public class AdminUserCtrl {
 
     @Autowired
     AdminUserService adminUserServiceImpl;
+
+    @Autowired
+    LogHelper logHelper;
 
     /**
      * userList page query
@@ -38,6 +42,7 @@ public class AdminUserCtrl {
     public String updateUserInfo(SysUserVo sysUserVo) {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("update user",username);
         return  adminUserServiceImpl.update(isAdmin,username,sysUserVo);
     }
 
@@ -46,6 +51,7 @@ public class AdminUserCtrl {
     public String delUser(String sysUserId) {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("del user" + sysUserId,username);
         return  adminUserServiceImpl.delUser(isAdmin,username,sysUserId);
     }
 

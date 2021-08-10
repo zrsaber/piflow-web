@@ -32,6 +32,8 @@ public class SysUserVo implements Serializable {
 
     private Byte status;
 
+    private String lastLoginIp;
+
     @Enumerated(EnumType.STRING)
     private SysRoleType role;
 
@@ -122,5 +124,13 @@ public class SysUserVo implements Serializable {
 
     public void setStatus(Byte status) {
         this.status = status;
+    }
+
+    public String getLastLoginIp() {
+        return lastLoginIp;
+    }
+
+    public void setLastLoginIp(String lastLoginIp) {
+        this.lastLoginIp = lastLoginIp;
     }
 }

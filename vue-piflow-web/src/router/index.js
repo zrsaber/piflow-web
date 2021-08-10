@@ -113,9 +113,14 @@ export default new Router({
               component: () => import('../components/pages/User')
             },
             {
+              path: '/user',
+              name: 'user',
+              component: () => import('../components/pages/User/index')
+            },
+            {
               path:'/log',
               name:'log',
-              components:() => import('../components/pages/User/log')
+              component:() => import('../components/pages/User/log')
             }
           ]
         },

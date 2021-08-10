@@ -151,6 +151,7 @@ public class SysUserServiceImpl implements ISysUserService {
 		sysUser.setAge(sysUserVo.getAge());
 		sysUser.setSex(sysUserVo.getSex());
 		sysUser.setStatus(sysUserVo.getStatus());
+		sysUser.setLastLoginIp(sysUserVo.getLastLoginIp());
 
 		List<SysRole> sysRoleList = new ArrayList<>();
 		SysRole sysRole = new SysRole();

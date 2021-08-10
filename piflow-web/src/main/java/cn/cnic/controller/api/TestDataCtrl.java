@@ -2,6 +2,7 @@ package cn.cnic.controller.api;
 
 import javax.annotation.Resource;
 
+import cn.cnic.component.user.service.LogHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,9 @@ public class TestDataCtrl {
 
     @Resource
     private ITestDataService testDataServiceImpl;
+
+    @Resource
+    private LogHelper logHelper;
 
     /**
      * saveOrUpdateTestDataSchema
@@ -64,6 +68,7 @@ public class TestDataCtrl {
     public String delTestData(@ApiParam(value = "testDataId", required = true)String testDataId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("delTestData " + testDataId,currentUsername);
         return testDataServiceImpl.delTestData(currentUsername, isAdmin, testDataId);
     }
 
@@ -79,6 +84,7 @@ public class TestDataCtrl {
     public String saveOrUpdateTestDataSchemaValues(@ApiParam(value = "schemaValuesVo", required = true)TestDataSchemaValuesSaveVo schemaValuesVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("saveOrUpdateTestDataSchemaValues " + schemaValuesVo.getTestDataId(),currentUsername);
         return testDataServiceImpl.saveOrUpdateTestDataSchemaValues(currentUsername, isAdmin, schemaValuesVo);
     }
 
@@ -194,6 +200,7 @@ public class TestDataCtrl {
                                 @ApiParam(value = "delimiter", required = true)String delimiter,
                                 @ApiParam(value = "file", required = true)@RequestParam("file") MultipartFile file) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("uploadCsvFile" + file.getName(),username);
         return testDataServiceImpl.uploadCsvFile(username, testDataId, header, schema, delimiter, file);
     }
 

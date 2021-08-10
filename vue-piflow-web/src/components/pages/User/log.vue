@@ -1,4 +1,6 @@
+
 <template>
+
     <section>
         <div class="navbar">
             <!-- 初始栏的建立 -->
@@ -6,12 +8,6 @@
                 <span>{{$t("sidebar.log")}}</span>
             </div>
 
-            <!-- 添加用户的按钮建立 -->
-            <!-- <div class="right">
-                <span class="button-warp" @click="handleModalSwitch">
-                    <Icon type="md-add" />
-                </span>
-            </div> -->
         </div>
 
         <!-- 搜索栏的建立，此处的搜索栏与系统的其他地方相同 -->
@@ -26,20 +22,6 @@
 
         <!-- 建立主体：表单 -->
         <Table border :columns="columns" :data="tableData">
-
-            <!-- 建立操作页面 -->
-            <template slot-scope="{ row }" slot="action">
-                <Tooltip content="Edit" placement="top-start">
-                    <span class="button-warp" @click="handleButtonSelect(row,1)">
-                    <Icon type="ios-create-outline" />
-                    </span>
-                </Tooltip>
-                <Tooltip content="Delete" placement="top-start">
-                    <span class="button-warp" @click="handleButtonSelect(row,2)">
-                    <Icon type="ios-trash" />
-                    </span>
-                </Tooltip>
-            </template>
         </Table>
 
         <!-- 下拉页面的建立 -->
@@ -56,7 +38,6 @@
             />
         </div>
 
-        <!-- 点击添加按钮出现的 -->
         
     </section>
 </template>
@@ -75,9 +56,10 @@ export default {
             param:"",
 
             row:null,
-            id:"",
-            name:"",
-            ipAdress:""
+            username:"",
+            lastLoginIp:"",
+            action:"",
+            lastUpdateDttm:""
         };
     },
 
@@ -97,9 +79,97 @@ export default {
         }
     },
 
-    
-}
+    computed:{
+        columns() {
+            return[
+                {
+                    title:this.$t("log_columns.username"),
+                    key:"username",
+                    sortable:true
+                },
+                {
+                    title:this.$t("log_columns.lastLoginIp"),
+                    key:"lastLoginIp"
+                },
+                {
+                    title:this.$t("log_columns.lastUpdateTime"),
+                    key:"lastUpdateDttm"
+                },
+                {
+                    title:this.$t("log_columns.action"),
+                    key:"action"
+                }
 
+            ];
+        }
+    },
+
+    created() {
+        this.getTableData();
+    },
+
+    methods:{
+        handleReset() {
+            this.page = 1;
+            this.limit = 10;
+            this.id = "";
+            this.lastLoginIp = "";
+            this.password= "";
+            this.status = "";
+        },
+
+        // handleSaveUpdateData() {
+        //     let data = {
+        //         username: this.username,
+        //         ip: this.ip,
+        //         action: this.action,
+        //         lastUpdateDttm:this.lastUpdateDttm
+        //     };
+        // },
+
+        getTableData() {
+            let data = { page: this.page, limit: this.limit };
+            if (this.param) {
+                data.param = this.param;
+            }
+            this.$axios
+            .get("/log/getLogListPage", {
+                params: data
+            })
+            .then(res => {
+                if (res.data.code === 200) {
+                    let data = res.data.data;
+                    this.tableData = data.map(item => {
+                    return item;
+                    });
+                    this.total = res.data.count;
+                } else {
+                    this.$Message.error({
+                    content: this.$t("tip.request_fail_content"),
+                    duration: 3
+                    });
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                    this.$Message.error({
+                    content: this.$t("tip.fault_content"),
+                    duration: 3
+                });
+            });
+        },
+
+        onPageChange(pageNo) {
+        this.page = pageNo;
+        this.getTableData()
+        },
+        onPageSizeChange(pageSize) {
+        this.limit = pageSize;
+        this.getTableData()
+        }
+    
+    }
+};
 </script>
 
 <style lang="scss" scoped>

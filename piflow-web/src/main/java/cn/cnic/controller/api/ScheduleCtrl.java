@@ -2,6 +2,7 @@ package cn.cnic.controller.api;
 
 import javax.annotation.Resource;
 
+import cn.cnic.component.user.service.LogHelper;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,6 +20,9 @@ public class ScheduleCtrl {
 
     @Resource
     private IScheduleService scheduleServiceImpl;
+
+    @Resource
+    private LogHelper logHelper;
 
     /**
      * Query and enter the scheduleVo list
@@ -46,6 +50,7 @@ public class ScheduleCtrl {
     @ResponseBody
     public String addSchedule(ScheduleVo scheduleVo) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("addSchedule " + scheduleVo.getScheduleRunTemplateName(),username);
         return scheduleServiceImpl.addSchedule(username, scheduleVo);
     }
 
@@ -74,6 +79,7 @@ public class ScheduleCtrl {
     public String updateSchedule(ScheduleVo scheduleVo) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("updateSchedule " + scheduleVo.getScheduleRunTemplateName(),username);
         return scheduleServiceImpl.updateSchedule(isAdmin, username, scheduleVo);
     }
 
@@ -88,6 +94,7 @@ public class ScheduleCtrl {
     public String delSchedule(String scheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("updateSchedule " + scheduleId,username);
         return scheduleServiceImpl.delSchedule(isAdmin, username, scheduleId);
     }
 

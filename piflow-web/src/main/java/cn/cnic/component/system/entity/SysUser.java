@@ -33,6 +33,8 @@ public class SysUser extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private String sex;
 
+    private String lastLoginIp;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sysUser")
     private List<SysRole> roles;
 

@@ -15,6 +15,7 @@ public class SysUserMapperProvider {
     private Integer age;
     private String sex;
     private Byte status;
+    private String lastLoginIp;
 
     private void preventSQLInjectionSysUser(SysUser sysUser) {
         if (null != sysUser && StringUtils.isNotBlank(sysUser.getLastUpdateUser())) {
@@ -25,6 +26,7 @@ public class SysUserMapperProvider {
             this.age = sysUser.getAge();
             this.sex = SqlUtils.preventSQLInjection(sysUser.getSex());
             this.status = (null != sysUser.getStatus() ? sysUser.getStatus() : 0);
+            this.lastLoginIp = SqlUtils.preventSQLInjection(sysUser.getLastLoginIp());
         }
     }
 
@@ -35,6 +37,7 @@ public class SysUserMapperProvider {
         this.age = null;
         this.sex = null;
         this.status=0;
+        this.lastLoginIp = null;
     }
 
 
@@ -130,13 +133,13 @@ public class SysUserMapperProvider {
 
         strBuf.append("( ");
         strBuf.append(SqlUtils.baseFieldName() + ", ");
-        strBuf.append("username, password, name, age, sex,status ");
+        strBuf.append("username, password, name, age, sex,status,last_login_ip ");
         strBuf.append(") ");
 
         strBuf.append("values ");
         strBuf.append("(");
         strBuf.append(SqlUtils.baseFieldValues(sysUser) + ", ");
-        strBuf.append(username + "," + password + "," + name + "," + age + "," + sex+","+status);
+        strBuf.append(username + "," + password + "," + name + "," + age + "," + sex+","+status+","+lastLoginIp);
         strBuf.append(")");
         this.resetSysUser();
         return strBuf.toString() + ";";

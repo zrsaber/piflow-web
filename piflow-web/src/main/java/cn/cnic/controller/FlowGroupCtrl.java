@@ -2,6 +2,7 @@ package cn.cnic.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.cnic.component.user.service.LogHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +24,9 @@ public class FlowGroupCtrl {
 
     @Autowired
     private IFlowService flowServiceImpl;
+
+    @Autowired
+    private LogHelper logHelper;
 
     /**
      * ‘flowGroupList’ paged query
@@ -50,6 +54,7 @@ public class FlowGroupCtrl {
     @ResponseBody
     public String saveOrUpdateFlowGroup(FlowGroupVo flowGroupVo) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("saveOrUpdateFlowGroup " + flowGroupVo.getName() ,username);
         return flowGroupServiceImpl.saveOrUpdate(username, flowGroupVo);
     }
 
@@ -100,13 +105,13 @@ public class FlowGroupCtrl {
     /**
      * run Flow Group
      *
-     * @param request
      * @return
      */
     @RequestMapping("/runFlowGroup")
     @ResponseBody
     public String runFlowGroup(String flowGroupId, String runMode) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("runFlowGroup" + runMode,username);
         return flowGroupServiceImpl.runFlowGroup(username, flowGroupId, runMode);
     }
 
@@ -121,6 +126,7 @@ public class FlowGroupCtrl {
     public String deleteFlowGroup(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("deleteFlowGroup" + id, username);
         return flowGroupServiceImpl.deleteFLowGroupInfo(isAdmin, username, id);
     }
 

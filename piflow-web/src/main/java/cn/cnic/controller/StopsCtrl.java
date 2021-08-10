@@ -8,6 +8,7 @@ import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
+import cn.cnic.component.user.service.LogHelper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +33,9 @@ public class StopsCtrl {
 
     @Resource
     private IStopsHubService stopsHubServiceImpl;
+
+    @Resource
+    private LogHelper logHelper;
 
     /**
      * 'stops'and'groups' on the left of'reload'
@@ -91,6 +95,7 @@ public class StopsCtrl {
     @ResponseBody
     public String updateStops(HttpServletRequest request, String[] content, String id) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("updateStops " + id,username);
         return propertyServiceImpl.updatePropertyList(username, content);
     }
 
@@ -98,6 +103,7 @@ public class StopsCtrl {
     @ResponseBody
     public String updateStops(HttpServletRequest request, String content, String id) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("updateStopOne " + id, username);
         return propertyServiceImpl.updateProperty(username, content, id);
     }
 
@@ -107,6 +113,7 @@ public class StopsCtrl {
         String id = request.getParameter("stopId");
         String isCheckpointStr = request.getParameter("isCheckpoint");
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("updateStopsById" + id,username);
         return stopsServiceImpl.updateStopsCheckpoint(username, id, isCheckpointStr);
     }
 
@@ -119,6 +126,7 @@ public class StopsCtrl {
         String pageId = request.getParameter("pageId");
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("updateStopsNameById" + stopName,username);
         return stopsServiceImpl.updateStopName(username, isAdmin, id, flowId, stopName, pageId);
     }
 
@@ -126,6 +134,7 @@ public class StopsCtrl {
     @ResponseBody
     public String addStopCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("addStopCustomizedProperty " + stopsCustomizedPropertyVo.getName(),username);
         return customizedPropertyServiceImpl.addStopCustomizedProperty(username, stopsCustomizedPropertyVo);
     }
 
@@ -133,6 +142,7 @@ public class StopsCtrl {
     @ResponseBody
     public String updateStopsCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("updateStopsCustomizedProperty " + stopsCustomizedPropertyVo.getName(),username);
         return customizedPropertyServiceImpl.updateStopsCustomizedProperty(username, stopsCustomizedPropertyVo);
     }
 
@@ -140,6 +150,7 @@ public class StopsCtrl {
     @ResponseBody
     public String deleteStopsCustomizedProperty(String customPropertyId) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("deleteStopsCustomizedProperty "+ customPropertyId,username);
         return customizedPropertyServiceImpl.deleteStopsCustomizedProperty(username, customPropertyId);
     }
 
@@ -147,6 +158,7 @@ public class StopsCtrl {
     @ResponseBody
     public String deleteRouterStopsCustomizedProperty(String customPropertyId) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("deleteRouterStopsCustomizedProperty " + customPropertyId,username);
         return customizedPropertyServiceImpl.deleteRouterStopsCustomizedProperty(username, customPropertyId);
     }
 
@@ -183,6 +195,7 @@ public class StopsCtrl {
     @ResponseBody
     public String uploadStopsHubFile(@RequestParam("file") MultipartFile file) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("uploadStopsHubFile " + file.getName(),username);
         return stopsHubServiceImpl.uploadStopsHubFile(username, file);
     }
 

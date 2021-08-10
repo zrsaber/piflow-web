@@ -197,6 +197,15 @@ module.exports = {
         password:"密码",
         role:"权限"
     },
+
+    log_columns:{
+        username: "用户名",
+        lastLoginIp:"ip地址",
+        createTime: "创建时间",
+        lastUpdateTime:"操作时间",
+        action: "操作动作"
+
+    },
     stopsComponent_columns: {
         name: "组件名称",
         description: "描述信息",

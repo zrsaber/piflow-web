@@ -2,11 +2,13 @@ package cn.cnic.controller;
 
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.sparkJar.service.ISparkJarService;
+import cn.cnic.component.user.service.LogHelper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
 
 @RestController
 @RequestMapping("/sparkJar")
@@ -14,6 +16,9 @@ public class SparkJarCtrl {
 
     @Resource
     private ISparkJarService sparkJarServiceImpl;
+
+    @Resource
+    private LogHelper logHelper;
 
 
     /**
@@ -43,6 +48,7 @@ public class SparkJarCtrl {
     @ResponseBody
     public String uploadSparkJarFile(@RequestParam("file") MultipartFile file) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("uploadSparkJarFile " + file.getName(),username);
         return sparkJarServiceImpl.uploadSparkJarFile(username, file);
     }
 
@@ -85,6 +91,7 @@ public class SparkJarCtrl {
     public String delSparkJar(HttpServletRequest request, String id) {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("del SparkJar " + id,username);
         return sparkJarServiceImpl.delSparkJar(username, isAdmin, id);
     }
 }

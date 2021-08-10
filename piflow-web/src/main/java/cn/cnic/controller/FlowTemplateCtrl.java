@@ -5,6 +5,7 @@ import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.template.service.IFlowTemplateService;
 
 
+import cn.cnic.component.user.service.LogHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,9 @@ public class FlowTemplateCtrl {
     @Autowired
     private IFlowTemplateService flowTemplateServiceImpl;
 
+    @Autowired
+    private LogHelper logHelper;
+
 
     @RequestMapping("/saveFlowTemplate")
     @ResponseBody
@@ -32,6 +36,7 @@ public class FlowTemplateCtrl {
         String loadId = request.getParameter("load");
         String templateType = request.getParameter("templateType");
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("saveFlowTemplate",username);
         return flowTemplateServiceImpl.addFlowTemplate(username, name, loadId, templateType);
     }
 
@@ -52,6 +57,8 @@ public class FlowTemplateCtrl {
     @RequestMapping("/deleteFlowTemplate")
     @ResponseBody
     public String deleteFlowTemplate(String id) {
+        String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("deleteFlowTemplate"+ id,username);
         return flowTemplateServiceImpl.deleteFlowTemplate(id);
     }
 
@@ -77,6 +84,7 @@ public class FlowTemplateCtrl {
     @ResponseBody
     public String uploadXmlFile(@RequestParam("file") MultipartFile file) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("uploadXmlFile" + file.getName() , username);
         return flowTemplateServiceImpl.uploadXmlFile(username, file);
     }
 
